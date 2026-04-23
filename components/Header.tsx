@@ -28,17 +28,18 @@ export default function Header() {
           >
             Home
           </Link>
-           <Link
-            href="/shop"
-            className="text-sm font-medium text-slate-700 transition hover:text-slate-900"
-          >
-            View Products
-          </Link>
+           
            <Link
             href="/about"
             className="text-sm font-medium text-slate-700 transition hover:text-slate-900"
           >
             About Us
+          </Link>
+          <Link
+            href="/shop"
+            className="text-sm font-medium text-slate-700 transition hover:text-slate-900"
+          >
+            Shop Peptides
           </Link>
           <Link
             href="/cart"

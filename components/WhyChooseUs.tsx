@@ -2,27 +2,28 @@ import Image from "next/image";
 
 const features = [
   {
-    title: "Research Focused",
+   
+    title: "High Purity Standards",
     description:
-      "A clear and streamlined experience built around professional presentation for research environments.",
-    icon: "/flask.png",
-  },
-  {
-    title: "Quality Standards",
-    description:
-      "Structured product presentation with emphasis on consistency, documentation, and professional handling.",
+      "Committed to high purity products with a focus on quality, consistency, and customer confidence.",
     icon: "/shield.png",
   },
   {
-    title: "Scientific Precision",
+    title: "Product Consistency",
     description:
-      "A clean and modern framework designed to support clarity across available products and supporting details.",
+      "Clear, dependable product presentation so customers know what they are order.",
+    icon: "/flask.png",
+  },
+  {
+    title: "Product Accuracy",
+    description:
+      "Customers should feel confident that what they order is what they receive.",
     icon: "/microscope.png",
   },
   {
-    title: "Trusted Presentation",
+    title: "Fast Shipping & Support",
     description:
-      "Built to reflect a polished, credible, and quality-forward research brand from first view to checkout.",
+      "Dependable shipping and responsive support from check to delivery.",
     icon: "/quality.png",
   },
 ];
@@ -36,11 +37,11 @@ export default function WhyChooseUs() {
             Why Choose Valence
           </p>
           <h2 className="mt-4 text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
-            Built around trust, clarity, and quality
+            Quality products, reliable service, and confidence in every order
           </h2>
         </div>
 
-        <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {features.map((feature) => (
             <div
               key={feature.title}

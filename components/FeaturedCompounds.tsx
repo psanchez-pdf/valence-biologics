@@ -5,19 +5,19 @@ const products = [
     name: "Retatrutide",
     href: "/shop/retatrutide",
     description:
-      "Featured as one of our available products with a clean, documentation-forward presentation for research-focused environments.",
+      "10mg, 20mg, and 30mg vials available for research use only.",
   },
   {
     name: "BPC-157",
     href: "/shop/bpc-157",
     description:
-      "Structured for a streamlined browsing experience with consistent product presentation and research-use-only positioning.",
+      "5mg and 10mg vials available for research use only.",
   },
   {
     name: "GHK-Cu",
     href: "/shop/ghk-cu",
     description:
-      "Presented with the same quality-first visual standard used across our available products and supporting information.",
+      "10mg and 50mg vials available for research use only.",
   },
 ];
 
@@ -27,18 +27,17 @@ export default function FeaturedCompounds() {
       <div className="mx-auto max-w-7xl">
         <div className="mx-auto max-w-2xl text-center">
           <p className="text-sm font-semibold uppercase tracking-[0.22em] text-teal-700">
-            Featured Compounds
+            Available Products
           </p>
           <h2 className="mt-4 text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
             Explore Available Products
           </h2>
           <p className="mt-4 text-base leading-7 text-slate-600">
-            Browse featured research compounds presented through a polished,
-            structured, and professional product experience.
+            Browse available products and view product details.
           </p>
         </div>
 
-        <div className="mt-12 grid gap-6 md:grid-cols-3">
+        <div className="mt-10 grid gap-6 md:grid-cols-3">
           {products.map((product) => (
             <div
               key={product.name}
