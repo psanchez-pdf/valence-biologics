@@ -3,13 +3,19 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import type { Product } from "@/data/products";
 
+export type CartProduct = Product & {
+  size?: string;
+  quantity?: number;
+};
+
 export type CartItem = Product & {
+  size?: string;
   quantity: number;
 };
 
 type CartContextType = {
   items: CartItem[];
-  addToCart: (product: Product) => void;
+  addToCart: (product: CartProduct) => void;
   removeFromCart: (productId: string) => void;
   increaseQuantity: (productId: string) => void;
   decreaseQuantity: (productId: string) => void;
@@ -28,6 +34,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const savedCart = localStorage.getItem(CART_STORAGE_KEY);
+
     if (savedCart) {
       try {
         setItems(JSON.parse(savedCart));
@@ -35,38 +42,58 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         setItems([]);
       }
     }
+
     setIsLoaded(true);
   }, []);
 
   useEffect(() => {
     if (!isLoaded) return;
+
     localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items));
   }, [items, isLoaded]);
 
-  const addToCart = (product: Product) => {
+  const addToCart = (product: CartProduct) => {
+    const quantityToAdd = product.quantity && product.quantity > 0 ? product.quantity : 1;
+
     setItems((currentItems) => {
       const existingItem = currentItems.find((item) => item.id === product.id);
 
       if (existingItem) {
         return currentItems.map((item) =>
           item.id === product.id
-            ? { ...item, quantity: item.quantity + 1 }
+            ? {
+                ...item,
+                quantity: item.quantity + quantityToAdd,
+              }
             : item
         );
       }
 
-      return [...currentItems, { ...product, quantity: 1 }];
+      return [
+        ...currentItems,
+        {
+          ...product,
+          quantity: quantityToAdd,
+        },
+      ];
     });
   };
 
   const removeFromCart = (productId: string) => {
-    setItems((currentItems) => currentItems.filter((item) => item.id !== productId));
+    setItems((currentItems) =>
+      currentItems.filter((item) => item.id !== productId)
+    );
   };
 
   const increaseQuantity = (productId: string) => {
     setItems((currentItems) =>
       currentItems.map((item) =>
-        item.id === productId ? { ...item, quantity: item.quantity + 1 } : item
+        item.id === productId
+          ? {
+              ...item,
+              quantity: item.quantity + 1,
+            }
+          : item
       )
     );
   };
@@ -76,7 +103,10 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       currentItems
         .map((item) =>
           item.id === productId
-            ? { ...item, quantity: item.quantity - 1 }
+            ? {
+                ...item,
+                quantity: item.quantity - 1,
+              }
             : item
         )
         .filter((item) => item.quantity > 0)

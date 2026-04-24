@@ -13,19 +13,19 @@ export default function AboutPage() {
         <h1 className="mt-4 text-4xl font-semibold tracking-tight text-slate-900">
           Built around trust, quality, and consistency
         </h1>
-        <p className="mt-6 text-lg text-justify leading-8 text-slate-600">
+        <p className="mt-6 text-lg  leading-8 text-slate-600">
           Valence Biologics was created with a simple goal: to offer a more reliable 
           and professional experience for customers looking for quality peptide products. 
           We believe people should feel confident in where they shop, what they are ordering, 
           and the standard behind the brand.
 </p>
-        <p className="mt-4 text-lg text-justify  leading-8 text-slate-600">
+        <p className="mt-6 text-lg  leading-8 text-slate-600">
         Our approach is centered on clarity, consistency, and a better overall 
         experience from start to finish. From product presentation to customer 
         support, we aim to make every part of the process feel straightforward, 
         polished, and dependable.
 </p>
-     <p className="mt-4 text-lg text-justify leading-8 text-slate-600">
+     <p className="mt-6 text-lg leading-8 text-slate-600">
         At Valence Biologics, we are committed to building trust through quality, professionalism, and attention to detail.
         </p>
       </section>

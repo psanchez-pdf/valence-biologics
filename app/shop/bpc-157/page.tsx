@@ -1,110 +1,116 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Link from "next/link";
-import Image from "next/image";
-import AddToCartButton from "@/components/AddToCartButton";
+import ProductPurchaseOptions from "@/components/ProductPurchaseOptions";
 import { products } from "@/data/products";
 
-export default function BPC157Page() {
+export default function Bpc157Page() {
   const product = products.find((p) => p.id === "bpc-157");
 
   if (!product) return null;
+
+  const variants = [
+    {
+      id: "bpc-157-5mg",
+      size: "5 MG",
+      price: product.price,
+    },
+    {
+      id: "bpc-157-10mg",
+      size: "10 MG",
+      price: 95,
+    },
+    {
+      id: "bpc-157-15mg",
+      size: "15 MG",
+      price: 135,
+    },
+  ];
 
   return (
     <main className="min-h-screen bg-white">
       <Header />
 
-      <section className="bg-slate-50 px-6 py-16 lg:px-8">
-        <div className="mx-auto max-w-7xl">
-          <p className="text-sm font-semibold uppercase tracking-[0.22em] text-teal-700">
-            Available Products
-          </p>
-          <h1 className="mt-4 text-4xl font-semibold tracking-tight text-slate-900 sm:text-5xl">
-            BPC-157
-          </h1>
-          <p className="mt-4 max-w-3xl text-lg leading-8 text-slate-600">
-            Presented through a structured and modern product layout intended for
-            research-use-only materials.
-          </p>
-        </div>
-      </section>
+      <section className="border-b border-slate-100 bg-gradient-to-b from-slate-50 to-white px-6 py-14 lg:px-8">
+        <div className="mx-auto max-w-5xl">
+          <Link
+            href="/shop"
+            className="text-sm font-semibold text-slate-500 transition hover:text-slate-900"
+          >
+            ← Back to Shop
+          </Link>
 
-      <section className="px-6 py-16 lg:px-8">
-        <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-2">
-          <div className="overflow-hidden rounded-[2rem] border border-slate-200 bg-slate-50 shadow-sm">
-            <Image
-              src="/valence-bpc10.png"
-              alt="BPC-157 vial"
-              width={1122}
-              height={1402}
-              className="h-auto w-full object-cover"
-            />
-          </div>
+          <div className="mt-8 rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm sm:p-8 lg:p-10">
+            <div className="grid gap-10 lg:grid-cols-[1fr_0.8fr]">
+              <div>
+                <p className="text-sm font-semibold uppercase tracking-[0.22em] text-teal-700">
+                  Research Use Only
+                </p>
 
-          <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.22em] text-teal-700">
-              Research Use Only
-            </p>
-            <h2 className="mt-3 text-3xl font-semibold tracking-tight text-slate-900">
-              BPC-157
-            </h2>
+                <h1 className="mt-3 text-4xl font-semibold tracking-tight text-slate-900 sm:text-5xl">
+                  BPC-157
+                </h1>
 
-            <p className="mt-4 text-2xl font-semibold text-slate-900">
-              ${product.price.toFixed(2)}
-            </p>
+                <p className="mt-4 text-2xl font-bold text-slate-900">
+                  Starting at ${variants[0].price.toFixed(2)}
+                </p>
 
-            <p className="mt-6 text-base leading-8 text-slate-600">
-              This product page supports a clear and elevated browsing experience,
-              with emphasis on clean layout, consistency, and professional
-              research-only presentation.
-            </p>
+                <p className="mt-5 max-w-2xl text-base leading-8 text-slate-600">
+                  A polished research-use-only product listing designed for
+                  clear selection, consistent presentation, and a professional
+                  purchase experience.
+                </p>
 
-            <div className="mt-8 rounded-3xl border border-slate-200 bg-slate-50 p-6">
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div>
-                  <p className="text-sm font-medium text-slate-500">Format</p>
-                  <p className="mt-1 text-base font-semibold text-slate-900">
-                    Lyophilized peptide
-                  </p>
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-slate-500">Size</p>
-                  <p className="mt-1 text-base font-semibold text-slate-900">
-                    10 MG
-                  </p>
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-slate-500">Category</p>
-                  <p className="mt-1 text-base font-semibold text-slate-900">
-                    Research material
-                  </p>
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-slate-500">Use</p>
-                  <p className="mt-1 text-base font-semibold text-slate-900">
-                    Laboratory research only
-                  </p>
+                <div className="mt-8 grid gap-3 sm:grid-cols-2">
+                  <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                    <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
+                      Format
+                    </p>
+                    <p className="mt-2 text-sm font-bold text-slate-900">
+                      Lyophilized peptide
+                    </p>
+                  </div>
+
+                  <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                    <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
+                      Sizes
+                    </p>
+                    <p className="mt-2 text-sm font-bold text-slate-900">
+                      5 MG, 10 MG, 15 MG
+                    </p>
+                  </div>
+
+                  <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                    <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
+                      Category
+                    </p>
+                    <p className="mt-2 text-sm font-bold text-slate-900">
+                      Research material
+                    </p>
+                  </div>
+
+                  <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                    <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
+                      Use
+                    </p>
+                    <p className="mt-2 text-sm font-bold text-slate-900">
+                      Research Use Only
+                    </p>
+                  </div>
                 </div>
               </div>
+
+              <div className="rounded-[1.5rem] border border-slate-200 bg-slate-50 p-5">
+                <ProductPurchaseOptions product={product} variants={variants} />
+              </div>
             </div>
-
-            <div className="mt-8 flex flex-wrap gap-4">
-              <AddToCartButton product={product} />
-
-              <Link
-                href="/shop"
-                className="rounded-full border border-slate-300 px-6 py-3 text-sm font-semibold text-slate-900 transition hover:bg-slate-50"
-              >
-                Back to Shop
-              </Link>
-            </div>
-
-            <p className="mt-6 text-sm leading-7 text-slate-500">
-              This product is offered strictly for laboratory research use only.
-              It is not for human consumption, clinical use, diagnostic use, or
-              household use.
-            </p>
           </div>
+
+          <p className="mt-6 text-center text-sm leading-7 text-slate-500">
+            This product is offered strictly for laboratory research use only. It
+            is not for human consumption, clinical use, diagnostic use, or
+            household use.
+          </p>
         </div>
       </section>
 

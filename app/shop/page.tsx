@@ -38,9 +38,11 @@ export default function ShopPage() {
             <p className="text-sm font-semibold uppercase tracking-[0.22em] text-teal-700">
               Shop Peptides
             </p>
+
             <h1 className="mt-4 text-4xl font-semibold tracking-tight text-slate-900 sm:text-5xl">
               Available Products
             </h1>
+
             <p className="mt-4 text-lg leading-8 text-slate-600">
               Browse our available research-use-only products through a clean,
               modern, and professionally structured shopping experience.
@@ -49,9 +51,10 @@ export default function ShopPage() {
 
           <div className="mt-12 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
             {products.map((product) => (
-              <div
+              <Link
                 key={product.name}
-                className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm transition hover:-translate-y-1 hover:shadow-md"
+                href={product.href}
+                className="group block rounded-3xl border border-slate-200 bg-white p-8 shadow-sm transition hover:-translate-y-1 hover:shadow-md"
               >
                 <div className="overflow-hidden rounded-2xl border border-slate-200 bg-slate-50">
                   <Image
@@ -59,34 +62,34 @@ export default function ShopPage() {
                     alt={product.name}
                     width={1122}
                     height={1402}
-                    className="h-auto w-full object-cover"
+                    className="h-auto w-full object-cover transition duration-300 group-hover:scale-[1.02]"
                   />
                 </div>
 
-                <h2 className="mt-6 text-2xl font-semibold text-slate-900">
-                  {product.name}
-                </h2>
+                <div className="mt-6 flex items-start justify-between gap-4">
+                  <h2 className="text-2xl font-semibold text-slate-900">
+                    {product.name}
+                  </h2>
+
+                  <span className="mt-1 rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600">
+                    RUO
+                  </span>
+                </div>
 
                 <p className="mt-4 text-sm leading-7 text-slate-600">
                   {product.description}
                 </p>
 
-                <div className="mt-6 flex items-center gap-3">
-                  <Link
-                    href={product.href}
-                    className="rounded-full bg-slate-900 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800"
-                  >
+                <div className="mt-6 flex items-center justify-between border-t border-slate-100 pt-5">
+                  <span className="text-sm font-semibold text-slate-900 transition group-hover:text-teal-700">
                     View Product
-                  </Link>
+                  </span>
 
-                  <Link
-                    href={product.href}
-                    className="text-sm font-semibold text-slate-700 transition hover:text-teal-700"
-                  >
-                    Learn More
-                  </Link>
+                  <span className="text-lg font-semibold text-slate-900 transition group-hover:translate-x-1 group-hover:text-teal-700">
+                    →
+                  </span>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
 
