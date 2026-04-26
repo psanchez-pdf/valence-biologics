@@ -1,15 +1,24 @@
 "use client";
 
-import { createContext, useContext, useEffect, useMemo, useState } from "react";
-import type { Product } from "@/data/products";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+  type ReactNode,
+} from "react";
 
-export type CartProduct = Product & {
+export type CartProduct = {
+  id: string;
+  name: string;
+  image: string;
+  price: number;
   size?: string;
   quantity?: number;
 };
 
-export type CartItem = Product & {
-  size?: string;
+export type CartItem = CartProduct & {
   quantity: number;
 };
 
@@ -28,7 +37,7 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 
 const CART_STORAGE_KEY = "valence-cart";
 
-export function CartProvider({ children }: { children: React.ReactNode }) {
+export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
   const [isLoaded, setIsLoaded] = useState(false);
 
@@ -53,14 +62,17 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   }, [items, isLoaded]);
 
   const addToCart = (product: CartProduct) => {
-    const quantityToAdd = product.quantity && product.quantity > 0 ? product.quantity : 1;
+    const quantityToAdd =
+      product.quantity && product.quantity > 0 ? product.quantity : 1;
 
     setItems((currentItems) => {
-      const existingItem = currentItems.find((item) => item.id === product.id);
+      const existingItem = currentItems.find(
+        (item) => item.id === product.id && item.size === product.size
+      );
 
       if (existingItem) {
         return currentItems.map((item) =>
-          item.id === product.id
+          item.id === product.id && item.size === product.size
             ? {
                 ...item,
                 quantity: item.quantity + quantityToAdd,
@@ -113,7 +125,9 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     );
   };
 
-  const clearCart = () => setItems([]);
+  const clearCart = () => {
+    setItems([]);
+  };
 
   const itemCount = useMemo(
     () => items.reduce((total, item) => total + item.quantity, 0),
@@ -121,7 +135,11 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   );
 
   const subtotal = useMemo(
-    () => items.reduce((total, item) => total + item.price * item.quantity, 0),
+    () =>
+      items.reduce(
+        (total, item) => total + (item.price ?? 0) * item.quantity,
+        0
+      ),
     [items]
   );
 

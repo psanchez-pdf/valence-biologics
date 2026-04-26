@@ -6,7 +6,7 @@ export async function POST(req: Request) {
   try {
     const body = await req.json();
 
-    const { name, email, phone, cartItems, notes } = body;
+    const { name, email, phone, shippingState, shippingZip, cartItems, notes } = body;
 
     if (!name || !email || !cartItems || cartItems.length === 0) {
       return Response.json(
@@ -33,6 +33,8 @@ New order request:
 Name: ${name}
 Email: ${email}
 Phone: ${phone || "Not provided"}
+State: ${shippingState}
+Zip Code: ${shippingZip}
 
 Order:
 ${orderList}

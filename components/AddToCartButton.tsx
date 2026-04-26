@@ -3,16 +3,31 @@
 import { useCart } from "@/context/CartContext";
 import type { CartProduct } from "@/context/CartContext";
 
-export default function AddToCartButton({ product }: { product: CartProduct }) {
+type AddToCartButtonProps = {
+  product: CartProduct;
+  onAdded?: () => void;
+  label?: string;
+};
+
+export default function AddToCartButton({
+  product,
+  onAdded,
+  label = "Add to Cart",
+}: AddToCartButtonProps) {
   const { addToCart } = useCart();
+
+  function handleClick() {
+    addToCart(product);
+    onAdded?.();
+  }
 
   return (
     <button
       type="button"
-      onClick={() => addToCart(product)}
+      onClick={handleClick}
       className="w-full rounded-full bg-slate-900 px-6 py-4 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-800"
     >
-      Add to Cart
+      {label}
     </button>
   );
 }

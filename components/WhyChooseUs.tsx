@@ -2,28 +2,27 @@ import Image from "next/image";
 
 const features = [
   {
-   
-    title: "High Purity Standards",
+    title: "Clear Product Information",
     description:
-      "Committed to high purity products with a focus on quality, consistency, and customer confidence.",
+      "Vial sizes, product details, and research-use information are easy to review before you order.",
     icon: "/shield.png",
   },
   {
-    title: "Product Consistency",
+    title: "COA Information",
     description:
-      "Clear, dependable product presentation so customers know what they are order.",
+      "COA details will be linked on applicable product pages so available testing information is easy to review.",
     icon: "/flask.png",
   },
   {
-    title: "Product Accuracy",
+    title: "Simple Ordering",
     description:
-      "Customers should feel confident that what they order is what they receive.",
+      "A streamlined cart and order flow designed to make the process straightforward from start to finish.",
     icon: "/microscope.png",
   },
   {
-    title: "Fast Shipping & Support",
+    title: "Responsive Support",
     description:
-      "Dependable shipping and responsive support from check to delivery.",
+      "Questions are handled with clear communication and support from order review through delivery.",
     icon: "/quality.png",
   },
 ];
@@ -36,8 +35,9 @@ export default function WhyChooseUs() {
           <p className="text-sm font-semibold uppercase tracking-[0.22em] text-teal-700">
             Why Choose Valence
           </p>
+
           <h2 className="mt-4 text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
-            Quality products, reliable service, and confidence in every order
+            A clearer way to order research peptides
           </h2>
         </div>
 
@@ -45,21 +45,22 @@ export default function WhyChooseUs() {
           {features.map((feature) => (
             <div
               key={feature.title}
-              className="rounded-3xl border border-slate-200 bg-slate-50 p-8 text-center"
+              className="rounded-3xl border border-slate-200 bg-slate-50 p-8 text-center transition hover:-translate-y-1 hover:shadow-md"
             >
               <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-white shadow-sm">
                 <Image
                   src={feature.icon}
-                  alt={feature.title}
-                  width={32}
-                  height={32}
-                  className="h-20 w-20 object-contain"
+                  alt=""
+                  width={40}
+                  height={40}
+                  className="h-10 w-10 object-contain"
                 />
               </div>
 
               <h3 className="mt-6 text-xl font-semibold text-slate-900">
                 {feature.title}
               </h3>
+
               <p className="mt-3 text-sm leading-7 text-slate-600">
                 {feature.description}
               </p>

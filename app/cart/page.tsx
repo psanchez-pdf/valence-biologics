@@ -1,203 +1,312 @@
 "use client";
 
+import { useState } from "react";
+import Link from "next/link";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { useCart } from "@/context/CartContext";
-import Image from "next/image";
-import Link from "next/link";
 
 export default function CartPage() {
   const {
     items,
-    subtotal,
+    removeFromCart,
     increaseQuantity,
     decreaseQuantity,
-    removeFromCart,
     clearCart,
+    subtotal,
   } = useCart();
 
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    shippingState: "",
+    shippingZip: "",
+    notes: "",
+  });
+
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState("");
+
+  function updateForm(
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  }
+
+  async function submitOrderRequest(e: React.FormEvent) {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+    setSuccess(false);
+
+    try {
+      const res = await fetch("/api/order-request", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...form,
+          cartItems: items,
+          subtotal,
+        }),
+      });
+
+      if (!res.ok) throw new Error("Failed");
+
+      const submittedOrder = {
+        customer: form,
+        items,
+        subtotal,
+        submittedAt: new Date().toLocaleString(),
+      };
+
+      sessionStorage.setItem(
+        "valence-order-confirmation",
+        JSON.stringify(submittedOrder)
+      );
+
+      clearCart();
+      window.location.href = "/order-confirmation";
+    } catch {
+      setError("Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
   return (
-    <main className="min-h-screen bg-slate-50">
+    <main className="min-h-screen bg-white">
       <Header />
 
-      <section className="px-6 py-20 lg:px-8">
-        <div className="mx-auto max-w-7xl">
-          <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
-            <div className="max-w-3xl">
-              <p className="text-sm font-semibold uppercase tracking-[0.22em] text-teal-700">
-                Cart
-              </p>
+      <section className="mx-auto max-w-5xl px-6 py-20 lg:px-8">
+        <p className="text-sm font-semibold uppercase tracking-[0.22em] text-teal-700">
+          Cart
+        </p>
 
-              <h1 className="mt-4 text-4xl font-semibold tracking-tight text-slate-900 sm:text-5xl">
-                Your Cart
-              </h1>
+        <h1 className="mt-4 text-4xl font-semibold tracking-tight text-slate-900">
+          Request an Order
+        </h1>
 
-              <p className="mt-4 text-lg leading-8 text-slate-600">
-                Review your selected items before checkout.
-              </p>
-            </div>
+        <p className="mt-4 max-w-2xl text-lg leading-8 text-slate-600">
+         Review your selected items and send us your request. 
+         We'll confirm availability, answer any questions, and follow up with next steps.
+        </p>
 
-            {items.length > 0 && (
-              <Link
-                href="/shop"
-                className="inline-flex w-fit rounded-full border border-slate-300 bg-white px-6 py-3 text-sm font-semibold text-slate-900 shadow-sm transition hover:bg-slate-100"
-              >
-                Continue Shopping
-              </Link>
-            )}
+        {success && (
+          <div className="mt-8 rounded-2xl border border-teal-200 bg-teal-50 p-5 text-sm font-medium text-teal-800">
+            Order request sent successfully.
           </div>
+        )}
 
-          {items.length === 0 ? (
-            <div className="mt-12 rounded-3xl border border-slate-200 bg-white p-10 shadow-sm">
-              <h2 className="text-2xl font-semibold text-slate-900">
-                Your cart is empty
-              </h2>
+        {items.length === 0 ? (
+          <div className="mt-12 rounded-3xl border border-slate-200 bg-slate-50 p-8">
+            <h2 className="text-xl font-semibold text-slate-900">
+              Your cart is empty
+            </h2>
 
-              <p className="mt-3 text-sm leading-7 text-slate-600">
-                Browse available products to add items to your cart.
-              </p>
+            <p className="mt-2 text-slate-600">
+              Add products to your cart to begin your order request.
+            </p>
 
-              <Link
-                href="/shop"
-                className="mt-6 inline-block rounded-full bg-slate-900 px-6 py-3 text-sm font-semibold text-white transition hover:bg-slate-800"
-              >
-                Shop Peptides
-              </Link>
-            </div>
-          ) : (
-            <div className="mt-12 grid gap-8 lg:grid-cols-[1.6fr_0.8fr]">
-              <div className="space-y-6">
-                {items.map((item) => {
-                  const itemHref = item.href || "/shop";
+            <Link
+              href="/shop"
+              className="mt-6 inline-flex rounded-full bg-slate-900 px-6 py-3 text-sm font-semibold text-white transition hover:bg-slate-800"
+            >
+              Browse Peptides →
+            </Link>
+          </div>
+        ) : (
+          <div className="mt-12 grid gap-10 lg:grid-cols-[1.1fr_0.9fr]">
+            <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <h2 className="text-xl font-semibold text-slate-900">
+                    Selected Items
+                  </h2>
 
-                  return (
-                    <div
-                      key={item.id}
-                      className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm"
-                    >
-                      <div className="flex flex-col gap-6 md:flex-row">
-                        <Link
-                          href={itemHref}
-                          className="w-full max-w-[160px] overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 transition hover:border-slate-300"
-                        >
-                          <Image
-                            src={item.image}
-                            alt={item.name}
-                            width={1122}
-                            height={1402}
-                            className="h-auto w-full object-cover"
-                          />
-                        </Link>
-
-                        <div className="flex-1">
-                          <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
-                            <div>
-                              <Link href={itemHref}>
-                                <h2 className="text-2xl font-semibold text-slate-900 transition hover:text-teal-700">
-                                  {item.name}
-                                </h2>
-                              </Link>
-
-                              <p className="mt-2 text-sm text-slate-500">
-                                ${item.price.toFixed(2)} each
-                              </p>
-                            </div>
-
-                            <p className="text-lg font-semibold text-slate-900">
-                              ${(item.price * item.quantity).toFixed(2)}
-                            </p>
-                          </div>
-
-                          <div className="mt-6 flex flex-wrap items-center gap-4">
-                            <div className="flex items-center rounded-full border border-slate-300 bg-white">
-                              <button
-                                type="button"
-                                onClick={() => decreaseQuantity(item.id)}
-                                className="px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100"
-                              >
-                                −
-                              </button>
-
-                              <span className="px-4 py-2 text-sm font-semibold text-slate-900">
-                                {item.quantity}
-                              </span>
-
-                              <button
-                                type="button"
-                                onClick={() => increaseQuantity(item.id)}
-                                className="px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100"
-                              >
-                                +
-                              </button>
-                            </div>
-
-                            <button
-                              type="button"
-                              onClick={() => removeFromCart(item.id)}
-                              className="text-sm font-semibold text-slate-600 transition hover:text-slate-900"
-                            >
-                              Remove
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
+                </div>
 
                 <button
                   type="button"
                   onClick={clearCart}
-                  className="text-sm font-semibold text-slate-600 transition hover:text-slate-900"
+                  className="text-sm font-semibold text-slate-400 transition hover:text-slate-700"
                 >
                   Clear Cart
                 </button>
               </div>
 
-              <div className="h-fit rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
-                <h2 className="text-2xl font-semibold text-slate-900">
-                  Order Summary
-                </h2>
+              <div className="mt-7 divide-y divide-slate-100">
+         {items.map((item) => {
+  const unitPrice = item.price ?? 0;
+  const lineTotal = unitPrice * item.quantity;
 
-                <div className="mt-6 flex items-center justify-between text-sm text-slate-600">
-                  <span>Subtotal</span>
-                  <span className="font-semibold text-slate-900">
+  return (
+    <div
+      key={`${item.id}-${item.size ?? "default"}`}
+      className="relative py-6 last:pb-0"
+    >
+      <button
+        type="button"
+        onClick={() => removeFromCart(item.id)}
+        aria-label={`Remove ${item.name}`}
+        className="absolute right-0 top-0 text-lg leading-none text-slate-300 transition hover:text-slate-600"
+      >
+        ×
+      </button>
+
+      <div className="grid grid-cols-[1fr_auto] gap-6">
+        <div className="min-w-0 pr-4">
+          <h3 className="text-base font-semibold leading-6 text-slate-900">
+            {item.name}
+            {item.size ? ` - ${item.size}` : ""}
+          </h3>
+
+          <p className="mt-1 text-sm text-slate-500">
+            ${unitPrice.toFixed(2)} each
+          </p>
+
+          <div className="mt-4 flex items-center gap-3">
+            <button
+              type="button"
+              onClick={() => decreaseQuantity(item.id)}
+              className="flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 text-slate-700 transition hover:bg-slate-50"
+              aria-label="Decrease quantity"
+            >
+              −
+            </button>
+
+            <span className="w-7 text-center text-sm font-semibold text-slate-900">
+              {item.quantity}
+            </span>
+
+            <button
+              type="button"
+              onClick={() => increaseQuantity(item.id)}
+              className="flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 text-slate-700 transition hover:bg-slate-50"
+              aria-label="Increase quantity"
+            >
+              +
+            </button>
+          </div>
+        </div>
+
+        <p className="min-w-[105px] self-start pr-0 text-right text-base font-semibold leading-6 text-slate-900">
+          ${lineTotal.toFixed(2)}
+        </p>
+      </div>
+    </div>
+  );
+})}
+              </div>
+
+              <div className="mt-6 border-t border-slate-100 pt-6">
+                <div className="flex items-center justify-between gap-4">
+                  <span className="mt-1 text-lg font-semibold text-slate-900">
+                    Estimated subtotal
+                  </span>
+
+                  <span className="mt-1 text-xl font-semibold text-slate-900">
                     ${subtotal.toFixed(2)}
                   </span>
                 </div>
 
-                <div className="mt-4 flex items-center justify-between text-sm text-slate-600">
-                  <span>Shipping</span>
-                  <span>Calculated at checkout</span>
-                </div>
-
-                <div className="mt-6 border-t border-slate-200 pt-6">
-                  <div className="flex items-center justify-between">
-                    <span className="text-base font-semibold text-slate-900">
-                      Total
-                    </span>
-
-                    <span className="text-2xl font-semibold text-slate-900">
-                      ${subtotal.toFixed(2)}
-                    </span>
-                  </div>
-                </div>
-
-                <button
-                  type="button"
-                  className="mt-8 w-full rounded-full bg-slate-900 px-6 py-3 text-sm font-semibold text-white transition hover:bg-slate-800"
-                >
-                  Proceed to Checkout
-                </button>
-
-                <p className="mt-4 text-xs leading-6 text-slate-500">
-                  Products listed on this website are intended strictly for
-                  laboratory research use only.
-                </p>
+            
               </div>
             </div>
-          )}
-        </div>
+
+            <form
+              onSubmit={submitOrderRequest}
+              className="rounded-3xl border border-slate-200 bg-slate-50 p-6 shadow-sm"
+            >
+              <h2 className="text-xl font-semibold text-slate-900">
+                Contact Information
+              </h2>
+
+              <p className="mt-2 text-sm leading-6 text-slate-500">
+                Please enter the best contact information so our team can follow
+                up promptly.
+              </p>
+
+              <div className="mt-6 space-y-4">
+                <input
+                  name="name"
+                  placeholder="Name"
+                  value={form.name}
+                  onChange={updateForm}
+                  required
+                  className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-teal-600"
+                />
+
+                <input
+                  name="email"
+                  type="email"
+                  placeholder="Email"
+                  value={form.email}
+                  onChange={updateForm}
+                  required
+                  className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-teal-600"
+                />
+
+                <input
+                  name="phone"
+                  placeholder="Phone"
+                  value={form.phone}
+                  onChange={updateForm}
+                  className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-teal-600"
+                />
+
+                <div className="grid gap-4 sm:grid-cols-2">
+  <input
+    name="shippingState"
+    placeholder="State"
+    value={form.shippingState}
+    onChange={updateForm}
+    required
+    className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-teal-600"
+  />
+
+  <input
+    name="shippingZip"
+    placeholder="ZIP Code"
+    value={form.shippingZip}
+    onChange={updateForm}
+    required
+    className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-teal-600"
+  />
+</div>
+
+                <textarea
+                  name="notes"
+                  placeholder="Notes"
+                  value={form.notes}
+                  onChange={updateForm}
+                  rows={4}
+                  className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-teal-600"
+                />
+              </div>
+
+              {error && (
+                <p className="mt-4 text-sm font-medium text-red-600">
+                  {error}
+                </p>
+              )}
+
+              <button
+                type="submit"
+                disabled={loading}
+                className="mt-6 w-full rounded-full bg-slate-900 px-6 py-4 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:opacity-60"
+              >
+                {loading ? "Sending..." : "Submit Order Request"}
+              </button>
+
+              <p className="mt-4 text-xs leading-5 text-slate-500">
+                No payment is required at this time. We’ll review your request
+                and follow up with next steps.
+              </p>
+            </form>
+          </div>
+        )}
       </section>
 
       <Footer />
