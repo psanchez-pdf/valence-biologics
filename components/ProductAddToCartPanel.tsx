@@ -26,10 +26,7 @@ export default function ProductAddToCartPanel({
 
   function handleAdded() {
     setAdded(true);
-
-    window.setTimeout(() => {
-      setAdded(false);
-    }, 3000);
+    window.setTimeout(() => setAdded(false), 1800);
   }
 
   const cartProduct: CartProduct = {
@@ -37,75 +34,54 @@ export default function ProductAddToCartPanel({
     quantity,
   };
 
-  return (
-    <div className="rounded-[2rem] border border-slate-200 bg-white p-5 shadow-sm">
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <p className="text-sm font-semibold text-slate-500">Selected size</p>
-          <p className="mt-1 text-lg font-semibold text-slate-950">
-            {product.size}
-          </p>
-        </div>
-
-        <div className="text-right">
-          <p className="text-sm font-semibold text-slate-500">Price</p>
-          <p className="mt-1 text-lg font-semibold text-slate-950">
-            ${product.price.toFixed(2)}
-          </p>
-        </div>
+ return (
+  <div className="rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm">
+    <div className="flex items-center justify-between">
+      <div>
+        <p className="text-sm font-semibold text-slate-950">Quantity</p>
       </div>
 
-      <div className="mt-5 flex items-center justify-between rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
-        <div>
-          <p className="text-sm font-semibold text-slate-950">Quantity</p>
-          <p className="text-xs text-slate-500">
-            Adjust before adding to cart
-          </p>
-        </div>
+      <div className="flex items-center gap-4 rounded-full border border-slate-200 bg-white-50 px-3 py-2">
+        <button
+          type="button"
+          onClick={decreaseQuantity}
+          className="flex h-5 w-7 items-center justify-center rounded-full text-md font-semibold text-slate-700 transition hover:bg-white hover:text-teal-700"
+          aria-label="Decrease quantity"
+        >
+          −
+        </button>
 
-        <div className="flex items-center gap-3">
-          <button
-            type="button"
-            onClick={decreaseQuantity}
-            className="flex h-9 w-9 items-center justify-center rounded-full border border-slate-300 bg-white text-lg font-semibold text-slate-800 transition hover:border-teal-700 hover:text-teal-700"
-            aria-label="Decrease quantity"
-          >
-            −
-          </button>
+        <span className="min-w-5 text-center text-sm font-semibold text-slate-950">
+          {quantity}
+        </span>
 
-          <span className="min-w-6 text-center text-base font-semibold text-slate-950">
-            {quantity}
-          </span>
-
-          <button
-            type="button"
-            onClick={increaseQuantity}
-            className="flex h-9 w-9 items-center justify-center rounded-full border border-slate-300 bg-white text-lg font-semibold text-slate-800 transition hover:border-teal-700 hover:text-teal-700"
-            aria-label="Increase quantity"
-          >
-            +
-          </button>
-        </div>
+        <button
+          type="button"
+          onClick={increaseQuantity}
+          className="flex h-7 w-7 items-center justify-center rounded-full text-lg font-semibold text-slate-700 transition hover:bg-white hover:text-teal-700"
+          aria-label="Increase quantity"
+        >
+          +
+        </button>
       </div>
-
-      <div className="mt-5 flex items-center justify-between border-t border-slate-100 pt-5">
-        <p className="text-sm font-semibold text-slate-500">
-          Estimated total
-        </p>
-        <p className="text-xl font-semibold text-slate-950">
-          ${total.toFixed(2)}
-        </p>
-      </div>
-
-      <div className="mt-5">
-        <AddToCartButton
-          product={cartProduct}
-          onAdded={handleAdded}
-          label={added ? "Added to Cart ✓" : "Add to Cart"}
-        />
-      </div>
-
-    
     </div>
-  );
+
+    <div className="mt-4 flex items-center justify-between border-t border-slate-100 pt-5">
+      <p className="text-sm font-medium text-slate-500">Estimated total</p>
+      <p className="text-2xl font-semibold text-slate-950">
+        ${total.toFixed(2)}
+      </p>
+    </div>
+
+    <div className="mt-4">
+      <AddToCartButton
+        product={cartProduct}
+        onAdded={handleAdded}
+        label={added ? "Added to Cart ✓" : "Add to Cart"}
+      />
+    </div>
+
+  
+  </div>
+);
 }

@@ -25,7 +25,7 @@ export default function AddToCartButton({
     <button
       type="button"
       onClick={handleClick}
-      className="w-full rounded-full bg-slate-900 px-6 py-4 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-800"
+      className="w-full rounded-full bg-slate-900 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-800"
     >
       {label}
     </button>
