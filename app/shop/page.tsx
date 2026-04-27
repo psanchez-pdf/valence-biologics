@@ -1,215 +1,223 @@
+"use client";
+
+import { useMemo, useState } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Link from "next/link";
 import Image from "next/image";
 import { shopProducts } from "@/data/shopProducts";
+import { useCart } from "@/context/CartContext";
+import ProductAddToCartPanel from "@/components/ProductAddToCartPanel";
+import AddToCartButton from "@/components/AddToCartButton";
+import type { CartProduct } from "@/context/CartContext";
 
-const categories = [
-  "Metabolic Research",
-  "Repair & Recovery Research",
-  "Skin & Cellular Research",
-  "Cellular & Longevity Research",
-  "Growth Hormone Research",
-];
+type ShopProduct = (typeof shopProducts)[number];
 
-const featuredProducts = shopProducts.filter((product) =>
-  ["Tirzepatide", "Retatrutide", "BPC-157", "GHK-Cu"].includes(product.name)
-);
+function CatalogAddButton({ product }: { product: ShopProduct }) {
+  const { addToCart } = useCart();
+  const [added, setAdded] = useState(false);
+
+  function handleAddToCart() {
+    addToCart({
+      id: product.slug,
+      name: product.name,
+      size: product.size,
+      image: product.image,
+      price: product.price ?? 0,
+      quantity: 1,
+    });
+
+    setAdded(true);
+    window.setTimeout(() => setAdded(false), 1400);
+  }
+
+  return (
+<button
+  type="button"
+  onClick={handleAddToCart}
+  className={`mt-4 w-full rounded-full px-4 py-2.5 text-[12px] font-semibold transition-all duration-200 active:scale-[0.98] ${
+    added
+      ? "bg-teal-700 text-white shadow-sm"
+      : "bg-slate-900 text-white shadow-sm hover:bg-slate-800"
+  }`}
+>
+  <span className="relative flex items-center justify-center">
+  <span className={`${added ? "opacity-0" : "opacity-100"} transition`}>
+    Add to Cart
+  </span>
+  <span className={`absolute ${added ? "opacity-100" : "opacity-0"} transition`}>
+    Added ✓
+  </span>
+</span>
+</button>
+  );
+}
 
 export default function ShopPage() {
+  const [activeCategory, setActiveCategory] = useState("All");
+  const [search, setSearch] = useState("");
+  const [sortBy, setSortBy] = useState("featured");
+
+  const categories = useMemo(() => {
+    return ["All", ...Array.from(new Set(shopProducts.map((p) => p.category)))];
+  }, []);
+
+  const visibleProducts = useMemo(() => {
+    const normalizedSearch = search.trim().toLowerCase();
+
+    const filtered = shopProducts.filter((product) => {
+      const matchesCategory =
+        activeCategory === "All" || product.category === activeCategory;
+
+      const searchableText =
+        `${product.name} ${product.size} ${product.category}`.toLowerCase();
+
+      const matchesSearch =
+        normalizedSearch.length === 0 ||
+        searchableText.includes(normalizedSearch);
+
+      return matchesCategory && matchesSearch;
+    });
+
+    return [...filtered].sort((a, b) => {
+      if (sortBy === "price-low") return (a.price ?? 0) - (b.price ?? 0);
+      if (sortBy === "price-high") return (b.price ?? 0) - (a.price ?? 0);
+      if (sortBy === "name") return a.name.localeCompare(b.name);
+      return 0;
+    });
+  }, [activeCategory, search, sortBy]);
+
   return (
-    <main className="min-h-screen bg-slate-50">
+    <main className="min-h-screen bg-white">
       <Header />
 
-      <section className="relative overflow-hidden border-b border-slate-200 bg-white px-6 py-20 lg:px-8">
-        <div className="mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-[1.05fr_0.95fr]">
-          <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.22em] text-teal-700">
-              Shop Peptides
-            </p>
+      <section className="bg-gradient-to-b from-slate-50 via-white to-white px-6 py-8 lg:px-8">
+        <div className="mx-auto max-w-7xl">
+          <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+            <div className="mb-4">
+              <p className="text-sm font-semibold uppercase tracking-[0.22em] text-teal-700">
+                Shop Peptides
+              </p>
 
-            <h1 className="mt-4 max-w-3xl text-4xl font-semibold tracking-tight text-slate-950 sm:text-5xl lg:text-6xl">
-              Research products with a cleaner, more confident shopping
-              experience.
-            </h1>
+              <h1 className="mt-2 text-2xl font-semibold tracking-tight text-slate-950">
+              Research peptides
+              </h1>
 
-            <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-600">
-              Browse research-use-only products organized by category, with
-              clear sizing, consistent product presentation, and a simple
-              order-request flow.
-            </p>
+              <p className="mt-3 text-sm text-slate-500">
+                Browse available products
+              </p>
+            </div>
+          </div>
+          
+      <div className="mb-6 border-b border-slate-100 pb-4"></div>
 
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <Link
-                href="#all-products"
-                className="inline-flex items-center justify-center rounded-full bg-slate-950 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-800"
-              >
-                Browse Products
-              </Link>
+          <div className="mt-2 rounded-xl border border-slate-200 bg-white p-3 shadow-sm">
+            <div className="grid gap-3 lg:grid-cols-[1fr_auto] lg:items-center">
+              <div className="flex flex-wrap gap-2">
+                {categories.map((category) => (
+                  <button
+                    key={category}
+                    type="button"
+                    onClick={() => setActiveCategory(category)}
+                    className={`rounded-full px-3 py-1.5 text-xs font-semibold transition ${
+                      activeCategory === category
+                        ? "bg-slate-950 text-white"
+                        : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                    }`}
+                  >
+                    {category}
+                  </button>
+                ))}
+              </div>
 
-              <Link
-                href="/cart"
-                className="inline-flex items-center justify-center rounded-full border border-slate-300 bg-white px-6 py-3 text-sm font-semibold text-slate-900 transition hover:border-teal-700 hover:text-teal-700"
-              >
-                View Cart
-              </Link>
+             <div className="grid gap-2 sm:grid-cols-2 lg:w-[420px]">
+                <input
+                  type="search"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  placeholder="Search"
+                  className="h-10 rounded-full border border-slate-200 bg-white px-4 text-xs text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-teal-600 focus:ring-2 focus:ring-teal-600/10"
+                />
+
+                <div className="relative">
+                  <select
+                    value={sortBy}
+                    onChange={(e) => setSortBy(e.target.value)}
+                    className="h-10 w-full appearance-none rounded-full border border-slate-200 bg-white px-4 pr-10 text-xs font-medium text-slate-700 outline-none transition focus:border-teal-600 focus:ring-2 focus:ring-teal-600/10"
+                  >
+                    <option value="featured">Featured</option>
+                    <option value="price-low">Price: Low to High</option>
+                    <option value="price-high">Price: High to Low</option>
+                    <option value="name">Name A–Z</option>
+                  </select>
+
+                  <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-[10px] text-slate-400">
+                    ▼
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
 
-          <div className="rounded-[2rem] border border-slate-200 bg-slate-50 p-4 shadow-sm">
-            <div className="grid grid-cols-2 gap-4">
-              {featuredProducts.map((product) => (
-                <Link
-                  key={product.slug}
-                  href={`/shop/${product.slug}`}
-                  className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm transition hover:-translate-y-1 hover:shadow-md"
-                >
-                  <div className="overflow-hidden rounded-2xl bg-slate-50">
-                    <Image
-                      src={product.image}
-                      alt={`${product.name} ${product.size}`}
-                      width={1122}
-                      height={1402}
-                      className="h-auto w-full object-cover"
-                    />
-                  </div>
+          <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+            {visibleProducts.map((product) => (
+              <div
+                key={product.slug}
+                className="group rounded-2xl border border-slate-200 bg-white p-4 transition hover:-translate-y-0.5 hover:shadow-md"
+              >
+                <Link href={`/shop/${product.slug}`} className="block">
+               <div className="flex h-[185px] items-center justify-center rounded-xl bg-slate-50 sm:h-[]">
+                <Image
+                  src={product.image}
+                  alt={`${product.name} ${product.size}`}
+                  width={420}
+                  height={620}
+                  className="flex h-[200px] w-auto object-contain transition duration-300 group-hover:scale-[1.05] sm:h-[]"
+                />
+              </div>
 
                   <div className="mt-3">
-                    <p className="text-sm font-semibold text-slate-950">
-                      {product.name}
+                    <p className="text-[10px] font-semibold uppercase tracking-[0.08em] text-slate-7]400">
+                      {product.category}
                     </p>
-                    <p className="mt-1 text-xs font-medium text-slate-500">
-                      {product.size}
-                    </p>
+
+                    <div className="mt-1">
+                      <h2 className="text-[16px] font-semibold leading-5 text-slate-900">
+                        {product.name}
+                      </h2>
+
+                      <div className="mt-2 flex items-center justify-between">
+                        <p className="text-[11px] text-slate-400">
+                          {product.size}
+                        </p>
+
+                        <p className="text-[15px] font-semibold text-slate-900">
+                          ${product.price ?? 0}
+                        </p>
+                      </div>
+                    </div>
                   </div>
+                <div className="mt-4 border-t border-slate-100 pt-4"></div> 
                 </Link>
-              ))}
+             
+                <CatalogAddButton product={product} />
+
+                <Link
+                  href={`/shop/${product.slug}`}
+                  className="mt-2 block text-center text-xs font-medium text-teal-700 transition hover:text-teal-900"
+                >
+                  View details →
+                </Link>
+              </div>
+            ))}
+          </div>
+
+          {visibleProducts.length === 0 && (
+            <div className="mt-10 rounded-xl border border-slate-200 bg-white p-8 text-center">
+              <p className="text-sm text-slate-600">No products found.</p>
             </div>
-          </div>
-        </div>
-      </section>
-
-      <section id="all-products" className="px-6 py-16 lg:px-8">
-        <div className="mx-auto max-w-7xl">
-          <div className="flex flex-col justify-between gap-6 border-b border-slate-200 pb-8 lg:flex-row lg:items-end">
-            <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.22em] text-teal-700">
-                Available Products
-              </p>
-
-              <h2 className="mt-3 text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl">
-                Organized by research category
-              </h2>
-
-              <p className="mt-4 max-w-2xl text-base leading-7 text-slate-600">
-                Each product card includes the listed size, product category,
-                and a short research-focused overview.
-              </p>
-            </div>
-
-            <div className="rounded-2xl border border-teal-100 bg-teal-50 px-5 py-4">
-              <p className="text-sm font-semibold text-teal-900">
-                Research Use Only
-              </p>
-              <p className="mt-1 max-w-sm text-sm leading-6 text-teal-800">
-                Not for human consumption, clinical use, diagnostic use, or
-                household use.
-              </p>
-            </div>
-          </div>
-
-          <div className="mt-12 space-y-14">
-            {categories.map((category) => {
-              const categoryProducts = shopProducts.filter(
-                (product) => product.category === category
-              );
-
-              if (categoryProducts.length === 0) return null;
-
-              return (
-                <section key={category}>
-                  <div className="mb-6">
-                    <h3 className="text-2xl font-semibold tracking-tight text-slate-950">
-                      {category}
-                    </h3>
-                    <p className="mt-1 text-sm text-slate-500">
-                      {categoryProducts.length} product
-                      {categoryProducts.length === 1 ? "" : "s"}
-                    </p>
-                  </div>
-
-                  <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-                    {categoryProducts.map((product) => (
-                      <Link
-                        key={product.slug}
-                        href={`/shop/${product.slug}`}
-                        className="group flex h-full flex-col overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:border-teal-200 hover:shadow-md"
-                      >
-                        <div className="bg-slate-50 p-5">
-                          <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white">
-                            <Image
-                              src={product.image}
-                              alt={`${product.name} ${product.size}`}
-                              width={1122}
-                              height={1402}
-                              className="h-auto w-full object-cover transition duration-300 group-hover:scale-[1.03]"
-                            />
-                          </div>
-                        </div>
-
-                        <div className="flex flex-1 flex-col p-6">
-                          <div className="flex items-start justify-between gap-4">
-                            <div>
-                              <h4 className="text-2xl font-semibold text-slate-950">
-                                {product.name}
-                              </h4>
-
-                              <p className="mt-1 text-sm font-semibold text-teal-700">
-                                {product.size}
-                              </p>
-                            </div>
-
-                            <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600">
-                              RUO
-                            </span>
-                          </div>
-
-                          <p className="mt-4 flex-1 text-sm leading-7 text-slate-600">
-                            {product.summary}
-                          </p>
-
-                          <div className="mt-6 flex items-center justify-between border-t border-slate-100 pt-5">
-                            <span className="text-sm font-semibold text-slate-950 transition group-hover:text-teal-700">
-                              View Product
-                            </span>
-
-                            <span className="text-lg font-semibold text-slate-950 transition group-hover:translate-x-1 group-hover:text-teal-700">
-                              →
-                            </span>
-                          </div>
-                        </div>
-                      </Link>
-                    ))}
-                  </div>
-                </section>
-              );
-            })}
-          </div>
-
-          <div className="mt-16 rounded-[2rem] border border-slate-200 bg-slate-950 p-8 shadow-sm">
-            <p className="text-sm font-semibold uppercase tracking-[0.22em] text-teal-300">
-              Research Use Only
-            </p>
-
-            <p className="mt-4 max-w-4xl text-sm leading-7 text-slate-300">
-              All products listed on this page are intended strictly for
-              laboratory research use only. They are not intended for human
-              consumption, clinical use, diagnostic use, therapeutic use,
-              veterinary use, household use, or as food, drugs, cosmetics, or
-              dietary supplements.
-            </p>
-          </div>
-        </div>
+          )}
+       </div>
       </section>
 
       <Footer />

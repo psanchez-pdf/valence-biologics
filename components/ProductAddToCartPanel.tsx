@@ -105,11 +105,7 @@ export default function ProductAddToCartPanel({
         />
       </div>
 
-      {added && (
-        <p className="mt-3 text-center text-sm font-medium text-teal-700">
-          Item added. You can review your cart from the header.
-        </p>
-      )}
+    
     </div>
   );
 }

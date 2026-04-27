@@ -46,151 +46,174 @@ export default async function ProductPage({ params }: ProductPageProps) {
     <main className="min-h-screen bg-white">
       <Header />
 
-      <section className="border-b border-slate-200 bg-gradient-to-b from-slate-50 to-white px-6 py-16 lg:px-8">
-        <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
-          <div className="rounded-[2rem] border border-slate-200 bg-white p-5 shadow-sm">
-            <div className="overflow-hidden rounded-[1.5rem] bg-slate-50">
-              <Image
-                src={product.image}
-                alt={`${product.name} ${product.size}`}
-                width={1122}
-                height={1402}
-                priority
-                className="h-auto w-full object-cover"
-              />
-            </div>
-          </div>
+      <section className="bg-gradient-to-b from-slate-50 via-white to-white px-6 py-10 lg:px-8 lg:py-16">
+        <div className="mx-auto max-w-6xl">
+          <Link
+            href="/shop"
+            className="inline-flex text-sm font-semibold text-teal-700 transition hover:text-teal-900"
+          >
+            ← Back to Shop
+          </Link>
 
-          <div>
-            <Link
-              href="/shop"
-              className="text-sm font-semibold text-teal-700 transition hover:text-teal-900"
-            >
-              ← Back to Shop
-            </Link>
-
-            <p className="mt-8 text-sm font-semibold uppercase tracking-[0.22em] text-teal-700">
-              {product.category}
-            </p>
-
-            <div className="mt-4 flex flex-wrap items-center gap-3">
-              <h1 className="text-4xl font-semibold tracking-tight text-slate-950 sm:text-5xl">
-                {product.name}
-              </h1>
-
-              <span className="rounded-full bg-slate-100 px-4 py-2 text-sm font-semibold text-slate-700">
-                {product.size}
-              </span>
-
-              <span className="rounded-full bg-teal-50 px-4 py-2 text-sm font-semibold text-teal-800">
-                RUO
-              </span>
+          <div className="mt-8 grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
+            <div className="rounded-[2rem] border border-slate-200 bg-white p-4 shadow-sm">
+              <div className="flex aspect-square items-center justify-center overflow-hidden rounded-[1.5rem] bg-slate-50 p-6">
+                <div className="aspect-[4/3]">
+                  <Image
+                    src={product.image}
+                    alt={`${product.name} ${product.size}`}
+                    width={800}
+                    height={800}
+                    priority
+                    className="max-h-[420px] w-auto object-contain"
+                  />
+                </div>
+              </div>
             </div>
 
-            <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-600">
-              {product.summary}
-            </p>
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-[0.22em] text-teal-700">
+                {product.category}
+              </p>
 
-            <div className="mt-8">
-              <ProductAddToCartPanel
-                product={{
-                  id: product.slug,
-                  name: product.name,
-                  size: product.size,
-                  image: product.image,
-                  price: product.price ?? 0,
-                  description: product.summary,
-                  quantity: 1,
-                }}
-              />
+              <div className="mt-4 flex flex-wrap items-center gap-3">
+                <h1 className="text-4xl font-semibold tracking-tight text-slate-950 sm:text-5xl">
+                  {product.name}
+                </h1>
+
+                <span className="rounded-full bg-slate-100 px-4 py-2 text-sm font-semibold text-slate-700">
+                  {product.size}
+                </span>
+              </div>
+
+              <p className="mt-5 max-w-2xl text-base leading-8 text-slate-600">
+                {product.summary}
+              </p>
+
+              <div className="mt-7 grid max-w-xl grid-cols-2 gap-3 sm:grid-cols-3">
+                <div className="rounded-2xl border border-slate-200 bg-white p-4">
+                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">
+                    Size
+                  </p>
+                  <p className="mt-2 text-sm font-semibold text-slate-900">
+                    {product.size}
+                  </p>
+                </div>
+
+                <div className="rounded-2xl border border-slate-200 bg-white p-4">
+                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">
+                    Price
+                  </p>
+                  <p className="mt-2 text-sm font-semibold text-slate-900">
+                    ${product.price ?? 0}
+                  </p>
+                </div>
+
+                <div className="rounded-2xl border border-slate-200 bg-white p-4">
+                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">
+                    Use
+                  </p>
+                  <p className="mt-2 text-sm font-semibold text-slate-900">
+                    Research only
+                  </p>
+                </div>
+              </div>
+
+              <div className="mt-8 max-w-xl">
+                <ProductAddToCartPanel
+                  product={{
+                    id: product.slug,
+                    name: product.name,
+                    size: product.size,
+                    image: product.image,
+                    price: product.price ?? 0,
+                    quantity: 1,
+                  }}
+                />
+              </div>
+
+              <div className="mt-5 max-w-xl rounded-2xl border border-slate-200 bg-slate-50 px-5 py-4">
+                <p className="text-xs leading-6 text-slate-500">
+                  No payment is required at this step. Availability and order
+                  details are reviewed before confirmation.
+                </p>
+              </div>
             </div>
-
-            <p className="mt-5 text-sm leading-6 text-slate-500">
-              No payment is required at this time. Final availability, order
-              details, and next steps are confirmed after review.
-            </p>
           </div>
         </div>
       </section>
 
-      <section className="px-6 py-16 lg:px-8">
-        <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[0.75fr_1.25fr]">
-          <div className="rounded-[2rem] border border-slate-200 bg-slate-50 p-8">
-            <p className="text-sm font-semibold uppercase tracking-[0.22em] text-teal-700">
-              Research Profile
+      <section className="border-t border-slate-100 px-6 py-14 lg:px-8">
+        <div className="mx-auto grid max-w-6xl gap-8 lg:grid-cols-[0.9fr_1.1fr]">
+          <div className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm">
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-teal-700">
+              Product Snapshot
             </p>
 
-            <h2 className="mt-3 text-2xl font-semibold tracking-tight text-slate-950">
-              Product overview
-            </h2>
-
-            <div className="mt-6 space-y-4 text-sm leading-7 text-slate-600">
-              <div>
-                <p className="font-semibold text-slate-950">Product</p>
-                <p>{product.name}</p>
+            <div className="mt-6 divide-y divide-slate-100">
+              <div className="flex items-center justify-between gap-6 pb-4">
+                <span className="text-sm text-slate-500">Product</span>
+                <span className="text-right text-sm font-semibold text-slate-900">
+                  {product.name}
+                </span>
               </div>
 
-              <div>
-                <p className="font-semibold text-slate-950">Listed Size</p>
-                <p>{product.size}</p>
+              <div className="flex items-center justify-between gap-6 py-4">
+                <span className="text-sm text-slate-500">Size</span>
+                <span className="text-right text-sm font-semibold text-slate-900">
+                  {product.size}
+                </span>
               </div>
 
-              <div>
-                <p className="font-semibold text-slate-950">Category</p>
-                <p>{product.category}</p>
+              <div className="flex items-center justify-between gap-6 py-4">
+                <span className="text-sm text-slate-500">Category</span>
+                <span className="text-right text-sm font-semibold text-slate-900">
+                  {product.category}
+                </span>
               </div>
 
-              <div>
-                <p className="font-semibold text-slate-950">Use</p>
-                <p>Laboratory research use only</p>
+              <div className="flex items-center justify-between gap-6 pt-4">
+                <span className="text-sm text-slate-500">Intended use</span>
+                <span className="text-right text-sm font-semibold text-slate-900">
+                  Research Use Only
+                </span>
               </div>
             </div>
           </div>
 
-          <div className="rounded-[2rem] border border-slate-200 bg-white p-8 shadow-sm">
-            <p className="text-sm font-semibold uppercase tracking-[0.22em] text-teal-700">
-              Published Research Context
+          <div className="rounded-[2rem] border border-slate-200 bg-slate-50 p-6">
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-teal-700">
+              Research Context
             </p>
 
-            <h2 className="mt-3 text-2xl font-semibold tracking-tight text-slate-950">
-              What research commonly evaluates
-            </h2>
-
-            <div className="mt-6 grid gap-4">
+            <div className="mt-5 space-y-4">
               {product.researchHighlights.map((highlight) => (
                 <div
                   key={highlight}
-                  className="rounded-2xl border border-slate-200 bg-slate-50 p-5"
+                  className="rounded-2xl border border-slate-200 bg-white p-5"
                 >
-                  <p className="text-sm leading-7 text-slate-700">
+                  <p className="text-sm leading-7 text-slate-600">
                     {highlight}
                   </p>
                 </div>
               ))}
             </div>
-
-            <div className="mt-8 rounded-2xl border border-teal-100 bg-teal-50 p-5">
-              <p className="text-sm font-semibold text-teal-950">
-                Research-use-only statement
-              </p>
-
-              <p className="mt-2 text-sm leading-7 text-teal-900">
-                {product.researchNote}
-              </p>
-            </div>
           </div>
         </div>
       </section>
 
-      <section className="px-6 pb-20 lg:px-8">
-        <div className="mx-auto max-w-7xl rounded-[2rem] border border-slate-200 bg-slate-950 p-8">
-          <p className="text-sm font-semibold uppercase tracking-[0.22em] text-teal-300">
-            Important Notice
+      <section className="px-6 pb-16 lg:px-8">
+        <div className="mx-auto max-w-6xl rounded-[2rem] border border-slate-200 bg-white p-6">
+          <p className="text-sm font-semibold text-slate-900">
+            Research-use-only notice
           </p>
 
-          <p className="mt-4 max-w-4xl text-sm leading-7 text-slate-300">
-            All products listed by Valence Biologics are intended strictly for
-            laboratory research use only. Products are not intended for human
+          <p className="mt-3 text-sm leading-7 text-slate-600">
+            {product.researchNote}
+          </p>
+
+          <p className="mt-4 text-xs leading-6 text-slate-500">
+            Products listed by Valence Biologics are not intended for human
             consumption, clinical use, diagnostic use, therapeutic use,
             veterinary use, household use, or as food, drugs, cosmetics, or
             dietary supplements.
